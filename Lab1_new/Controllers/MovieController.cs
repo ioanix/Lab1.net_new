@@ -34,10 +34,25 @@ namespace Lab1_new.Controllers
 
         // GET: api/Movie
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        public ActionResult<IEnumerable<Movie>> FilterMoviesAndOrder(DateTime? dateAdded, DateTime? dateAdded1)
         {
-            return await _context.Movies.ToListAsync();
+            if(dateAdded == null|| dateAdded1 == null)
+            {
+                return _context.Movies.ToList();
+            }
+
+           var movieList = _context.Movies.Where(movie => movie.DateAdded >= dateAdded && movie.DateAdded <= dateAdded1).ToList();
+
+           return movieList.OrderByDescending(movie => movie.YearOfRelease).ToList();
         }
+
+
+        // GET: api/Movie
+        //[HttpGet]
+        //public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
+        //{
+        //    return await _context.Movies.ToListAsync();
+        //}
 
         // GET: api/Movie/5
         [HttpGet("{id}")]
