@@ -34,14 +34,14 @@ namespace Lab1_new.Controllers
 
         // GET: api/Movie
         [HttpGet]
-        public ActionResult<IEnumerable<Movie>> FilterMoviesAndOrder(DateTime? dateAdded, DateTime? dateAdded1)
+        public ActionResult<IEnumerable<Movie>> FilterMoviesAndOrder(DateTime? fromDate, DateTime? toDate)
         {
-            if(dateAdded == null|| dateAdded1 == null)
+            if(fromDate == null|| toDate == null)
             {
                 return _context.Movies.ToList();
             }
 
-           var movieList = _context.Movies.Where(movie => movie.DateAdded >= dateAdded && movie.DateAdded <= dateAdded1).ToList();
+           var movieList = _context.Movies.Where(movie => movie.DateAdded >= fromDate && movie.DateAdded <= toDate).ToList();
 
            return movieList.OrderByDescending(movie => movie.YearOfRelease).ToList();
         }
