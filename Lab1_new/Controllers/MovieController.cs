@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Lab1_new.Data;
 using Lab1_new.Models;
 using Lab1_new.ViewModels;
+using AutoMapper;
 
 namespace Lab1_new.Controllers
 {
@@ -16,10 +17,12 @@ namespace Lab1_new.Controllers
     public class MovieController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public MovieController(ApplicationDbContext context)
+        public MovieController(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -67,7 +70,9 @@ namespace Lab1_new.Controllers
 
             }) ;
 
-            return query.ToList();
+            var query_v2 = _context.Movies.Where(m => m.Id == id).Include(m => m.CommentsList).Select(m => _mapper.Map<MovieWithCommentsViewModel>(m));
+
+            return query_v2.ToList();
         }
 
 
@@ -93,7 +98,7 @@ namespace Lab1_new.Controllers
 
         // GET: api/Movie/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movie>> GetMovie(int id)
+        public async Task<ActionResult<MovieViewModel>> GetMovie(int id)
         {
             var movie = await _context.Movies.FindAsync(id);
 
@@ -102,7 +107,9 @@ namespace Lab1_new.Controllers
                 return NotFound();
             }
 
-            return movie;
+            var movieViewModel = _mapper.Map<MovieViewModel>(movie);
+
+            return movieViewModel;
         }
 
         // PUT: api/Movie/5
