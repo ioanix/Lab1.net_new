@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Lab1_new.Data;
 using Lab1_new.Models;
+using Lab1_new.ViewModels;
 
 namespace Lab1_new.Controllers
 {
@@ -47,12 +48,48 @@ namespace Lab1_new.Controllers
         }
 
 
-        // GET: api/Movie
-        //[HttpGet]
-        //public async Task<ActionResult<IEnumerable<Movie>>> GetMovies()
-        //{
-        //    return await _context.Movies.ToListAsync();
-        //}
+        // GET: api/Movie/5/Comments
+        [HttpGet("{id}/Comments")]
+        public ActionResult<IEnumerable<MovieWithCommentsViewModel>> GetCommentsForMovie(int id)
+        {
+            var query = _context.Movies.Where(m => m.Id == id).Include(m => m.CommentsList).Select(m => new MovieWithCommentsViewModel
+            {
+                Id = m.Id,
+                Title = m.Title,
+                Rating = m.Rating,
+                Watched = m.Watched,
+                CommentsList = m.CommentsList.Select(mc => new CommentViewModel
+                {
+                    Id = mc.Id,
+                    Text = mc.Text,
+                    Important = mc.Important
+                })
+
+            }) ;
+
+            return query.ToList();
+        }
+
+
+        // POST: api/Movie/5/Comments
+        [HttpPost("{id}/Comments")]
+        public IActionResult PostCommentForMovie(int id, Comment comment)
+        {
+            var movie = _context.Movies.Where(p => p.Id == id).Include(p => p.CommentsList).FirstOrDefault();
+
+            if(movie == null)
+            {
+                return NotFound();
+            }
+
+            movie.CommentsList.Add(comment);
+            _context.Entry(movie).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok();
+        }
+
+
 
         // GET: api/Movie/5
         [HttpGet("{id}")]

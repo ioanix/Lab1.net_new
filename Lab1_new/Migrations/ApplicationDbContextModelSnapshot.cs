@@ -389,9 +389,11 @@ namespace Lab1_new.Migrations
 
             modelBuilder.Entity("Lab1_new.Models.Comment", b =>
                 {
-                    b.HasOne("Lab1_new.Models.Movie", null)
+                    b.HasOne("Lab1_new.Models.Movie", "Movie")
                         .WithMany("CommentsList")
                         .HasForeignKey("MovieId");
+
+                    b.Navigation("Movie");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

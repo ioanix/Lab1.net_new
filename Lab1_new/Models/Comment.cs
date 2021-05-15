@@ -8,7 +8,7 @@ namespace Lab1_new.Models
         public long Id { get; set; }
         public string Text { get; set; }
         public bool Important{ get; set; }
-        public Movie movie;
+        public Movie Movie { get; set; }
 
 public Comment()
         {
