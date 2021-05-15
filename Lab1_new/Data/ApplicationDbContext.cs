@@ -14,6 +14,8 @@ namespace Lab1_new.Data
     {
 
         public DbSet<Movie> Movies { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+
 
         public ApplicationDbContext(
             DbContextOptions options,
