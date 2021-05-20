@@ -26,6 +26,15 @@ namespace Lab1_new.Controllers
         }
 
 
+        /// <summary>
+        /// Filter movies by minYear
+        /// </summary>
+        /// <param name="minYear"></param>
+        /// <response code="200">Filter movies by date added</response>
+        /// <response code="400">Unable to get the movie due to validation error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
         //GET: api/Movie/filter/{minYear}
         [HttpGet]
         [Route("filter/{minYear}")]
@@ -35,8 +44,13 @@ namespace Lab1_new.Controllers
             return _context.Movies.Where(movie => movie.YearOfRelease >= minYear).ToList();
         }
 
-
-        // GET: api/Movie
+        /// <summary>
+        /// Filter movies by date added
+        /// </summary>
+        /// <response code="200">Filter movies by date added</response>
+        /// <response code="400">Unable to get the movie due to validation error</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
         public ActionResult<IEnumerable<Movie>> FilterMoviesAndOrder(DateTime? fromDate, DateTime? toDate)
         {
@@ -50,6 +64,12 @@ namespace Lab1_new.Controllers
            return movieList.OrderByDescending(movie => movie.YearOfRelease).ToList();
         }
 
+        /// <summary>
+        /// Get movie with comments
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="200">Get movie with comments</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
 
         // GET: api/Movie/5/Comments
         [HttpGet("{id}/Comments")]
@@ -75,8 +95,13 @@ namespace Lab1_new.Controllers
             return query_v2.ToList();
         }
 
-
-        // POST: api/Movie/5/Comments
+        /// <summary>
+        /// Add a new comment to movie
+        /// </summary>
+        /// <response code="200">Add a new comment to movie</response>
+        /// <response code="404">Movie not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/Comments")]
         public IActionResult PostCommentForMovie(int id, Comment comment)
         {
@@ -94,7 +119,29 @@ namespace Lab1_new.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// Get a list of movies
+        /// </summary>
+        /// <response code="200">Get a list of movies</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        // GET: api/Movies
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Movie>>> Getmovies()
+        {
+            var movies = await _context.Movies.ToListAsync();
 
+            return Ok(movies);
+        }
+
+
+        /// <summary>
+        /// Get a movie by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <response code="200">Get a movie by id</response>
+        /// <response code="404">Movie not found</response>
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         // GET: api/Movie/5
         [HttpGet("{id}")]
@@ -111,6 +158,19 @@ namespace Lab1_new.Controllers
 
             return movieViewModel;
         }
+
+        /// <summary>
+        /// Update a movie
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="movie"></param>
+        /// <returns></returns>
+        /// <response code="204">Update a movie</response>
+        /// <response code="400">Unable to update the movie due to validation error</response>
+        /// <response code="404">Movie not found</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         // PUT: api/Movie/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -143,6 +203,16 @@ namespace Lab1_new.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Add a new movie
+        /// </summary>
+        /// <param name="movie"></param>
+        /// <returns></returns>
+        /// <response code="201">Creates new movie</response>
+        /// <response code="400">Unable to create the movie due to validation error</response>
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+
         // POST: api/Movie
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -153,6 +223,16 @@ namespace Lab1_new.Controllers
 
             return CreatedAtAction("GetMovie", new { id = movie.Id }, movie);
         }
+
+        /// <summary>
+        /// Deelet a movie by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <response code="204">Delete a movie</response>
+        /// <response code="404">Movie not found</response>
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
 
         // DELETE: api/Movie/5
         [HttpDelete("{id}")]
