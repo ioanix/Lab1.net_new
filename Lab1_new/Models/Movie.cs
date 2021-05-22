@@ -9,28 +9,28 @@ namespace Lab1_new.Models
 
         public int Id { get; set; }
 
-        [Required]
+        //[Required]
         public string Title { get; set; }
 
-        [Required]
+        //[Required]
         public string Description { get; set; }
 
-        [Required]
+        //[Required]
         public Genre Genre { get; set; }
 
-        [Required]
+        //[Required]
         public int Duration { get; set; }
 
-        [Required]
+        //[Required]
         public int YearOfRelease { get; set; }
 
-        [Required]
+        //[Required]
         public string Director { get; set; }
 
-        [Required]
+        //[Required]
         public DateTime DateAdded { get; set; }
 
-        [Range(1, 10)]
+        //[Range(1, 10)]
         public int Rating { get; set; }
 
         public string Watched { get; set; }

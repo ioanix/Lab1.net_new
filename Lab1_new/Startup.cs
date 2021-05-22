@@ -15,6 +15,10 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Reflection;
 using System.IO;
+using FluentValidation.AspNetCore;
+using Lab1_new.ViewModels;
+using FluentValidation;
+using Lab1_new.Validators;
 
 namespace Lab1_new
 {
@@ -50,6 +54,7 @@ namespace Lab1_new
             services.AddAuthentication()
                 .AddIdentityServerJwt();
             services.AddControllersWithViews()
+                .AddFluentValidation()
                 .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter()));
             services.AddRazorPages();
             // In production, the Angular files will be served from this directory
@@ -85,6 +90,7 @@ namespace Lab1_new
                 c.IncludeXmlComments(xmlPath);
             });
 
+            services.AddTransient<IValidator<MovieViewModel>, MovieValidator>();
             
 
         }

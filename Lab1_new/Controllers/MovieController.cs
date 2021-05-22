@@ -38,10 +38,11 @@ namespace Lab1_new.Controllers
         //GET: api/Movie/filter/{minYear}
         [HttpGet]
         [Route("filter/{minYear}")]
-        public ActionResult<IEnumerable<Movie>> FilterMovies(int minYear)
+        public ActionResult<IEnumerable<MovieViewModel>> FilterMovies(int minYear)
         {
 
-            return _context.Movies.Where(movie => movie.YearOfRelease >= minYear).ToList();
+            return _context.Movies.Select(movie => _mapper.Map<MovieViewModel>(movie))
+                                  .Where(movie => movie.YearOfRelease >= minYear).ToList();
         }
 
         /// <summary>
@@ -52,16 +53,19 @@ namespace Lab1_new.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [HttpGet]
-        public ActionResult<IEnumerable<Movie>> FilterMoviesAndOrder(DateTime? fromDate, DateTime? toDate)
+        public ActionResult<IEnumerable<MovieViewModel>> FilterMoviesAndOrder(DateTime? fromDate, DateTime? toDate)
         {
+
+            var movieViewModelList = _context.Movies.Select(movie => _mapper.Map<MovieViewModel>(movie)).ToList();
+
             if(fromDate == null|| toDate == null)
             {
-                return _context.Movies.ToList();
+                return movieViewModelList;
             }
 
-           var movieList = _context.Movies.Where(movie => movie.DateAdded >= fromDate && movie.DateAdded <= toDate).ToList();
+           var movieListSorted = movieViewModelList.Where(movie => movie.DateAdded >= fromDate && movie.DateAdded <= toDate).ToList();
 
-           return movieList.OrderByDescending(movie => movie.YearOfRelease).ToList();
+           return movieListSorted.OrderByDescending(movie => movie.YearOfRelease).ToList();
         }
 
         /// <summary>
@@ -103,8 +107,10 @@ namespace Lab1_new.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost("{id}/Comments")]
-        public IActionResult PostCommentForMovie(int id, Comment comment)
+        public IActionResult PostCommentForMovie(int id, CommentViewModel commentViewModel)
         {
+            var comment = _mapper.Map<Comment>(commentViewModel);
+
             var movie = _context.Movies.Where(p => p.Id == id).Include(p => p.CommentsList).FirstOrDefault();
 
             if(movie == null)
@@ -119,20 +125,7 @@ namespace Lab1_new.Controllers
             return Ok();
         }
 
-        /// <summary>
-        /// Get a list of movies
-        /// </summary>
-        /// <response code="200">Get a list of movies</response>
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        // GET: api/Movies
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Movie>>> Getmovies()
-        {
-            var movies = await _context.Movies.ToListAsync();
-
-            return Ok(movies);
-        }
-
+      
 
         /// <summary>
         /// Get a movie by id
@@ -175,8 +168,11 @@ namespace Lab1_new.Controllers
         // PUT: api/Movie/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMovie(int id, Movie movie)
+        public async Task<IActionResult> PutMovie(int id, MovieViewModel movieViewModel)
         {
+
+            var movie = _mapper.Map<Movie>(movieViewModel);
+
             if (id != movie.Id)
             {
                 return BadRequest();
@@ -216,8 +212,10 @@ namespace Lab1_new.Controllers
         // POST: api/Movie
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Movie>> PostMovie(Movie movie)
+        public async Task<ActionResult<MovieViewModel>> PostMovie(MovieViewModel movieViewModel)
         {
+            var movie = _mapper.Map<Movie>(movieViewModel);
+
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
