@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lab1_new.Controllers
 {
-    [Authorize]
+    [Authorize(AuthenticationSchemes = "Identity.Application,Bearer")]
     [ApiController]
     [Route("api/[controller]")]
     public class WeatherForecastController : ControllerBase
