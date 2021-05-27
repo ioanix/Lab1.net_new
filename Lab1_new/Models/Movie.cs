@@ -37,6 +37,8 @@ namespace Lab1_new.Models
 
         public List<Comment> CommentsList { get; set; }
 
+        public List<Reservation> Reservations { get; set; }
+
         public Movie()
         {
         }

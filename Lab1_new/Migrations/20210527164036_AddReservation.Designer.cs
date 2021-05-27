@@ -4,14 +4,16 @@ using Lab1_new.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Lab1_new.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210527164036_AddReservation")]
+    partial class AddReservation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -235,6 +237,9 @@ namespace Lab1_new.Migrations
                     b.Property<int>("Rating")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ReservationId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -245,6 +250,8 @@ namespace Lab1_new.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ReservationId");
 
                     b.ToTable("Movies");
                 });
@@ -404,21 +411,6 @@ namespace Lab1_new.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("MovieReservation", b =>
-                {
-                    b.Property<int>("MoviesId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReservationsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MoviesId", "ReservationsId");
-
-                    b.HasIndex("ReservationsId");
-
-                    b.ToTable("MovieReservation");
-                });
-
             modelBuilder.Entity("Lab1_new.Models.Comment", b =>
                 {
                     b.HasOne("Lab1_new.Models.Movie", "Movie")
@@ -428,10 +420,17 @@ namespace Lab1_new.Migrations
                     b.Navigation("Movie");
                 });
 
+            modelBuilder.Entity("Lab1_new.Models.Movie", b =>
+                {
+                    b.HasOne("Lab1_new.Models.Reservation", null)
+                        .WithMany("Movies")
+                        .HasForeignKey("ReservationId");
+                });
+
             modelBuilder.Entity("Lab1_new.Models.Reservation", b =>
                 {
                     b.HasOne("Lab1_new.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany("Reservations")
+                        .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
                     b.Navigation("ApplicationUser");
@@ -488,29 +487,14 @@ namespace Lab1_new.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("MovieReservation", b =>
-                {
-                    b.HasOne("Lab1_new.Models.Movie", null)
-                        .WithMany()
-                        .HasForeignKey("MoviesId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Lab1_new.Models.Reservation", null)
-                        .WithMany()
-                        .HasForeignKey("ReservationsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Lab1_new.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("Reservations");
-                });
-
             modelBuilder.Entity("Lab1_new.Models.Movie", b =>
                 {
                     b.Navigation("CommentsList");
+                });
+
+            modelBuilder.Entity("Lab1_new.Models.Reservation", b =>
+                {
+                    b.Navigation("Movies");
                 });
 #pragma warning restore 612, 618
         }
