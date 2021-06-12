@@ -9,9 +9,11 @@ using Lab1_new.Data;
 using Lab1_new.Models;
 using Lab1_new.ViewModels;
 using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 
 namespace Lab1_new.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
     public class MovieController : ControllerBase
@@ -215,6 +217,7 @@ namespace Lab1_new.Controllers
         public async Task<ActionResult<MovieViewModel>> PostMovie(MovieViewModel movieViewModel)
         {
             var movie = _mapper.Map<Movie>(movieViewModel);
+            movie.DateAdded = DateTime.Now;
 
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();

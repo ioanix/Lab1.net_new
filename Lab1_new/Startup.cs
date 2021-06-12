@@ -38,7 +38,7 @@ namespace Lab1_new
 
            
         {
-
+         
             services.AddAutoMapper(typeof(MappingProfile));
 
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -115,6 +115,7 @@ namespace Lab1_new
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>
@@ -126,6 +127,12 @@ namespace Lab1_new
             {
                 app.UseDeveloperExceptionPage();
                 app.UseMigrationsEndPoint();
+
+                app.UseCors(builder =>
+                    builder.AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                );
             }
             else
             {

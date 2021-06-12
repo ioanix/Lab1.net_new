@@ -44,12 +44,12 @@ namespace Lab1_new.Models
         }
     }
 
-
     public enum Genre
     {
         Action,
         Comedy,
         Horror,
         Thriller
+
     }
 }
